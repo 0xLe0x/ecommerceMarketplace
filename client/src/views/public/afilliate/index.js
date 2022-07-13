@@ -7,11 +7,11 @@ import Feature1Image from 'assets/image/kghype_afilliate_f1.png';
 import Feature2Image from 'assets/image/kghype_afilliate_f2.png';
 import Feature3Image from 'assets/image/kghype_afilliate_f3.png';
 
-// import Info1Image from 'assets/image/kghype_afilliate_i1.png';
-// import Info1Stats from 'assets/image/kghype_afilliate_i1s.png';
+import Info1Image from 'assets/image/kghype_afilliate_i1.png';
+import Info1Stats from 'assets/image/kghype_afilliate_i1s.png';
 
-// import Info2Image from 'assets/image/kghype_afilliate_i2.png';
-// import Info2Stats from 'assets/image/kghype_afilliate_i2s.png';
+import Info2Image from 'assets/image/kghype_afilliate_i2.png';
+import Info2Stats from 'assets/image/kghype_afilliate_i2s.png';
 
 
 export default function Affiliate() {
@@ -66,35 +66,49 @@ export default function Affiliate() {
                 </Features>
             </FeaturesWrapper>
 
-            <InfoWrapper>
-                <InfoImage></InfoImage>
+            <InfosWrapper>
+                <InfoWrapper>
+                    <InfoImage>
+                        <ImageWrapper src={Info1Image} />
+                        <InfoStatsImage src={Info1Stats} />
+                    </InfoImage>
 
-                <InfoText>
-                    <InfoHeader></InfoHeader>
-                    <InfoDesc></InfoDesc>
+                    <InfoText>
+                        <InfoHeader>
+                            We connect our customers<br /> with the best, and help them<br /> keep up-and stay open.
+                        </InfoHeader>
 
-                    <InfoList>
-                        <InfoListItem></InfoListItem>
-                    </InfoList>
+                        <InfoList>
+                            <InfoListItem>Free Participation to Our Affiliate Alliance</InfoListItem>
+                            <InfoListItem>Compensation Guarantee</InfoListItem>
+                            <InfoListItem>Zero Service Fee Promise</InfoListItem>
+                        </InfoList>
 
-                    <InfoButton></InfoButton>
-                </InfoText>
-            </InfoWrapper>
-            
-            <InfoWrapper>
-                <InfoText>
-                    <InfoHeader></InfoHeader>
-                    <InfoDesc></InfoDesc>
+                        <FeatureButton>Start Now</FeatureButton>
+                    </InfoText>
+                </InfoWrapper>
+                
+                <InfoWrapper>
+                    <InfoText>
+                        <InfoHeader>We connect our customers with the best,<br /> and help them keep up-and stay open.</InfoHeader>
 
-                    <InfoList>
-                        <InfoListItem></InfoListItem>
-                    </InfoList>
+                        <InfoListBox>
+                            1. Feature Details
+                        </InfoListBox>
+                        <InfoListBox>
+                            2. Feature Details
+                        </InfoListBox>
+                        <InfoListBox>
+                            3. Feature Details
+                        </InfoListBox>
+                    </InfoText>
 
-                    <InfoButton></InfoButton>
-                </InfoText>
-
-                <InfoImage></InfoImage>
-            </InfoWrapper>
+                    <InfoImage>
+                        <ImageWrapper src={Info2Image} />
+                        <InfoStatsImage src={Info2Stats} />
+                    </InfoImage>
+                </InfoWrapper>
+            </InfosWrapper>
         </div>
     )
 }
@@ -215,20 +229,71 @@ const FeatureDesc = styled.div`
     margin: 12px 0;
 `;
 
-const FeatureButton = styled.div``;
+const FeatureButton = styled.button`
+    border-radius: 16px;
+    padding: 16px 36px;
+    margin-top: 6px;
+    background: #0A2640;
+    color: white;
+    border: none;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+`;
 
-const InfoWrapper = styled.div``;
+const InfosWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+`;
 
-const InfoImage = styled.div``;
+const InfoWrapper = styled.div`
+    display: flex;
+    justify-content: space-between;
+    width: 75%;
+    margin: 5rem 0;
+`;
 
-const InfoText = styled.div``;
+const InfoImage = styled.div`
+    position: relative;
+`;
 
-const InfoHeader = styled.div``;
+const InfoStatsImage = styled.img`
+    position: absolute;
+    right: 50px;
+    width: 50%;
+    bottom: -6rem;
+`;
 
-const InfoDesc = styled.div``;
+const InfoText = styled.div`
+    padding: 3rem;
+`;
 
-const InfoList = styled.div``;
+const InfoHeader = styled.div`
+    font-weight: 400;
+    font-size: 36px;
+    color: #000000;
+`;
 
-const InfoListItem = styled.div``;
+const InfoList = styled.ul`
+    padding: 0;
+    list-style-type: none;
+`;
 
-const InfoButton = styled.div``;
+const InfoListItem = styled.li`
+    font-family: 'Open Sans';
+    font-weight: 400;
+    font-size: 20px;
+    color: #000000;
+    margin-top: 12px;
+`;
+
+const InfoListBox = styled.div`
+    background: #FFFFFF;
+    box-shadow: 0px 4px 32px rgba(0, 0, 0, 0.1);
+    border-radius: 6px;
+    margin-top: 2rem;
+    padding: 1.5rem;
+`;

@@ -1,160 +1,130 @@
-import styled from 'styled-components';
-import Input from "components/input";
-import { Container } from 'components/container';
-import { Heading } from 'components/heading';
-import Button from 'components/button';
+// import styled from 'styled-components';
+import Input from 'components/input-new';
 import { Link } from 'react-router-dom';
-import { PUBLIC_PREFIX, SIGNUP_PREFIX } from 'configs/app-config';
-import { useState } from 'react';
-import { signIn } from 'actions/users';
+import {
+  PUBLIC_PREFIX,
+  SIGNUP_PREFIX,
+  FORGOT_PASSWORD_PREFIX,
+} from 'configs/app-config';
+import { useMemo, useState } from 'react';
 import { signed } from 'store/actions/actions';
-import { connect } from "react-redux";
-import { useHistory } from 'react-router-dom'
-import { NotifyFail } from 'utilities';
+import { connect } from 'react-redux';
 
-
-//Firebase 
+//Firebase
 
 import { auth } from 'firebase.js';
-import { db } from 'firebase.js';
-import { signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth"
-
-
-const HeadingStyle = {
-    color: "#072A48",
-    fontWeight: "800",
-    fontSize: "40px",
-    margin: "0px",
-    paddingBottom: "30px"
-}
-
-const LoginButton = {
-    marginTop: "50px"
-}
+// import { db } from 'firebase.js';
+import { signInWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
+import SignPageLayout from 'layouts/sign-page-layout';
+import CheckBox from 'components/checkbox';
+import { isValidEmail } from 'utilities/validator';
 
 function LoginPage(props) {
-    const [data, setData] = useState({
-        mail: "",
-        password: "",
-    });
+  const [data, setData] = useState({
+    mail: '',
+    password: '',
+    remember: false,
+  });
 
-    onAuthStateChanged(auth, (currentUser) => {
-        if (currentUser)
-            window.location = "/p/profile"
+  onAuthStateChanged(auth, (currentUser) => {
+    if (currentUser) window.location = '/p/profile';
+  });
 
-    })
+  const validationEmail = useMemo(() => {
+    return data.mail === '' || isValidEmail(data.mail);
+  }, [data.mail]);
+  //Values
 
-    //Values
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const newData = { ...data };
+    newData[e.target.id] = e.target.value;
+    setData(newData);
+  };
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        const newData = { ...data };
-        newData[e.target.id] = e.target.value;
-        setData(newData);
-        console.log(newData);
+  const login = async (e) => {
+    e.preventDefault();
+    try {
+      if (validationEmail) {
+        await signInWithEmailAndPassword(
+          auth,
+          data.mail,
+          data.password
+        );
+      }
+
+      window.location = '/p/profile';
+    } catch (error) {
+      console.log(error);
     }
+  };
 
-    const login = async (e) => {
-        e.preventDefault();
-        try {
-            const user = await signInWithEmailAndPassword(auth, data.mail, data.password);
+  return (
+    <SignPageLayout placeholderText='Login to KgHype' label='Login'>
+      <h1>Enter your Credentials</h1>
+      <h5>Login to our service</h5>
+      <div className='space-2'></div>
+      <div className='form'>
+        <Input
+          label='Email'
+          inputs={[
+            {
+              name: 'email',
+              value: data.mail,
+              id: 'mail',
+              error: !validationEmail,
+              placeholder: 'Email',
+            },
+          ]}
+          onChange={(e) => handleSubmit(e)}
+        />
+        <Input
+          label='Password'
+          inputs={[
+            {
+              type: 'password',
+              name: 'password',
+              value: data.password,
+              id: 'password',
+            },
+          ]}
+          append={{
+            to: PUBLIC_PREFIX + FORGOT_PASSWORD_PREFIX,
+            text: 'Forgot your password?',
+          }}
+          onChange={(e) => handleSubmit(e)}
+        />
 
-            window.location = "/p/profile";
-        } catch (error) {
-            console.log(error)
-        }
-    }
+        <CheckBox
+          name='remember'
+          label='Remember Me'
+          value={data.remember}
+          onChange={handleSubmit}
+          id='remember'
+        />
 
-    return (
-        <Container>
-            <ContentWrapper>
-                <FormWrapper>
-                    <Input label="Email address" name="email" value={data.mail} id="mail" onChange={e => handleSubmit(e)} />
-                    <Input label="Password" type='password' name="password" value={data.password} id="password" onChange={e => handleSubmit(e)} />
-                    <Row>
-                        <span>
-                            Forgot password
-                        </span>
-                        <Link to={PUBLIC_PREFIX + SIGNUP_PREFIX}>
-                            Sign up
-                        </Link>
-                    </Row>
-                    <Button text="Login" style={LoginButton} onClick={login} />
-                </FormWrapper>
-                <Wrapper>
-                    <Heading style={HeadingStyle}>
-                        New Customer ?
-                    </Heading>
-                    <NoteList>
-                        <li>Become a member of KGHYPE</li>
-                        <li>Check out faster</li>
-                        <li>Access your order history</li>
-                        <li>Track new orders</li>
-                    </NoteList>
-                </Wrapper>
-            </ContentWrapper>
-        </Container>
-    )
+        <button className='submit-button' onClick={login}>
+          SUBMIT
+        </button>
+        <div className='supporter' style={{ marginTop: 25 }}>
+          Don't have an account?
+          <Link to={PUBLIC_PREFIX + SIGNUP_PREFIX}>Register here.</Link>
+        </div>
+      </div>
+    </SignPageLayout>
+  );
 }
 
+const mapStateToProps = (state) => {
+  return {
+    user__state: state.userState.user__state,
+  };
+};
 
-const mapStateToProps = state => {
-    return {
-        user__state: state.userState.user__state
-    }
-}
+const mapDispatchToProps = (dispatch) => {
+  return {
+    userSigned: () => dispatch(signed()),
+  };
+};
 
-const mapDispatchToProps = dispatch => {
-    return {
-        userSigned: () => dispatch(signed())
-    }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(LoginPage)
-
-
-const FormWrapper = styled.form`
-    max-width:500px;
-    flex:1;
-    @media screen and (max-width:760px) {
-        width:100%;
-        max-width:100%;
-    }
-`
-
-const Row = styled.div`
-    display:flex;
-    flex-direction:row;
-    justify-content:space-between;
-    padding-top:20px;
-`
-
-const NoteList = styled.ul`
-    display:flex;
-    flex-direction:column;
-    gap:20px;
-    padding:0px;
-    margin:0px;
-    list-style:none;
-    font-size:18px;
-    font-family:Open Sans;
-`
-const Wrapper = styled.div`
-    padding-left:100px;
-    @media screen and (max-width:760px) {
-        padding-left:0px;
-        padding-top:50px;
-    }
-`
-
-const ContentWrapper = styled.div`
-    display:flex;
-    flex-direction:row;
-    align-items:flex-start;
-    flex-flow:wrap;
-    padding:50px 20px;
-    justify-content:center;
-    @media screen and (max-width:760px) {
-        flex-direction:column !important;
-    }
-`
+export default connect(mapStateToProps, mapDispatchToProps)(LoginPage);
